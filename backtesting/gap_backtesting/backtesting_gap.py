@@ -11,11 +11,11 @@ count_trading = 0  # 거래 횟수
 def get_ohlcv(ticker):
     dfs = [ ]
     # df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210423 11:00:00")
-    df = pyupbit.get_ohlcv(ticker, interval="minute15", to="20211121 23:00:00")
+    df = pyupbit.get_ohlcv(ticker, interval="minute10", to="20211121 23:00:00")
     dfs.append(df)
 
     for i in range(60):
-        df = pyupbit.get_ohlcv(ticker, interval="minute15", to=df.index[0])
+        df = pyupbit.get_ohlcv(ticker, interval="minute10", to=df.index[0])
         dfs.append(df)
         time.sleep(0.2)
 
@@ -140,11 +140,19 @@ def short_trading_for_1percent(df):
 
 
 #os.makedirs("/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/")
+
 for ticker in ["KRW-BTC","KRW-HUNT","KRW-ETH","KRW-ETC"]:
     df = get_ohlcv(ticker)
-    df.to_excel(f"/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/{ticker}.xlsx")
-    print(f'{ticker} 엑셀 데이터 변환 완료..')
+    if os.path.exists(f"/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/{ticker}.xlsx"):
+        os.remove(f"/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/{ticker}.xlsx")
+        df.to_excel(f"/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/{ticker}.xlsx")
+        print(f'{ticker} 엑셀 데이터 변환 완료..')
+    else:
+        df.to_excel(f"/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/{ticker}.xlsx")
+        print(f'{ticker} 엑셀 데이터 변환 완료..')
 
+    
+    
 for ticker in ["KRW-BTC","KRW-HUNT","KRW-ETH","KRW-ETC"]:
 #for ticker in ["KRW-DOGE"]:
     df = pd.read_excel(f"/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
