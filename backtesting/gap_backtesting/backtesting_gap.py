@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import time
 import pandas as pd
+import os
 
 count_stop_loss = 0  # 손절 횟수
 count_trading = 0  # 거래 횟수
@@ -10,11 +11,11 @@ count_trading = 0  # 거래 횟수
 def get_ohlcv(ticker):
     dfs = [ ]
     # df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210423 11:00:00")
-    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210521 23:00:00")
+    df = pyupbit.get_ohlcv(ticker, interval="minute15", to="20211121 23:00:00")
     dfs.append(df)
 
     for i in range(60):
-        df = pyupbit.get_ohlcv(ticker, interval="minute1", to=df.index[0])
+        df = pyupbit.get_ohlcv(ticker, interval="minute15", to=df.index[0])
         dfs.append(df)
         time.sleep(0.2)
 
@@ -137,15 +138,16 @@ def short_trading_for_1percent(df):
 
     return acc_ror
 
-'''
-for ticker in ["KRW-UPP","KRW-ADA","KRW-DOGE"]:
+
+#os.makedirs("/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/")
+for ticker in ["KRW-BTC","KRW-HUNT","KRW-ETH","KRW-ETC"]:
     df = get_ohlcv(ticker)
-    df.to_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx")
+    df.to_excel(f"/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/{ticker}.xlsx")
     print(f'{ticker} 엑셀 데이터 변환 완료..')
-'''
-for ticker in ["KRW-UPP","KRW-ADA","KRW-DOGE"]:
+
+for ticker in ["KRW-BTC","KRW-HUNT","KRW-ETH","KRW-ETC"]:
 #for ticker in ["KRW-DOGE"]:
-    df = pd.read_excel(f"backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
+    df = pd.read_excel(f"/Users/shinhyunjin/Documents/DATA/backtesting/gap_backtesting/result/{ticker}.xlsx", index_col=0)
     ror = short_trading_for_1percent(df)
     period_profit = df.iloc[-1, 3] / df.iloc[0, 0]
     print(ticker, f"초단타시 수익률: {ror:.2f} 단순 보유시 기간 수익률: {period_profit:.2f} 손절 횟수: {count_stop_loss} 지정가 횟수: {count_trading}")
